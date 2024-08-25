@@ -6,7 +6,7 @@ import {
   IdentificationTypes,
   PatientFormDefaultValues,
 } from "@/constants";
-import { createUser, registerPatient } from "@/lib/actions/patient.actions";
+import { registerPatient } from "@/lib/actions/patient.actions";
 import { PatientFormValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -35,12 +35,9 @@ function RegisterForm({ user }: { user: User }) {
       email: "",
       phone: "",
     },
-    mode: "onSubmit",
   });
 
-  const onSubmit = async (values: z.infer<typeof PatientFormValidation>) => {
-    console.log("Testing");
-
+  const onSubmit = async (values: any) => {
     setIsLoading(true);
 
     let formData;
@@ -66,16 +63,14 @@ function RegisterForm({ user }: { user: User }) {
 
       // @ts-ignore
       const patient = await registerPatient(patientData);
-      console.log(patient);
 
       if (patient) {
-        router.push(`/patient/${user.$id}/register/new-appointment`);
+        router.push(`/patient/${user.$id}/new-appointment`);
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -332,7 +327,7 @@ function RegisterForm({ user }: { user: User }) {
           <CustomFormField
             fieldType={FormFieldType.CHECKBOX}
             control={form.control}
-            name='discloseConsent'
+            name='disclosureConsent'
             label='I consent to disclosure of information'
           />
           <CustomFormField

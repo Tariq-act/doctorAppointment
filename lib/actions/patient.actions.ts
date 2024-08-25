@@ -50,6 +50,8 @@ export const registerPatient = async ({
   identificationDocument,
   ...patient
 }: RegisterUserParams) => {
+  console.log("Register");
+
   try {
     let file;
     if (identificationDocument) {
