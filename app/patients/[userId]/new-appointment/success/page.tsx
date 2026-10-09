@@ -7,10 +7,12 @@ import Link from "next/link";
 import React from "react";
 
 const SuccessPage = async ({
-  params: { userId },
+  params,
   searchParams,
 }: SearchParamProps) => {
-  const appointmentId = (searchParams?.appointmentId as string) || "";
+  const { userId } = await params;
+  const { appointmentId: appointmentIdParam } = await searchParams;
+  const appointmentId = (appointmentIdParam as string) || "";
   const appointment = await getAppointment(appointmentId);
   const doctor = Doctors.find(
     (doc) => doc.name === appointment.primaryPhysician
