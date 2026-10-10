@@ -37,15 +37,14 @@ const PassKeyModal = () => {
 
   useEffect(() => {
     const accessKey = encryptedKey && decryptKey(encryptedKey);
-    if (path) {
-      if (accessKey === process.env.NEXT_PUBLIC_ADMIN_PASSKEY) {
-        setOpen(false);
-        router.push("/admin");
-      } else {
-        setOpen(true);
-      }
+
+    if (accessKey === process.env.NEXT_PUBLIC_ADMIN_PASSKEY) {
+      setOpen(false);
+      router.push("/admin");
+    } else {
+      setOpen(true);
     }
-  }, [encryptedKey]);
+  }, [encryptedKey, path, router]);
 
   const validatePassKey = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -58,6 +57,7 @@ const PassKeyModal = () => {
       localStorage.setItem("accessKey", encryptedKey);
 
       setOpen(false);
+      router.push("/admin");
     } else {
       setError("Invalid passkey, Please try again.");
     }
