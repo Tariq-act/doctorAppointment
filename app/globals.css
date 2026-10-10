@@ -348,10 +348,15 @@
   }
 
   .shad-select-content {
-    @apply rounded-xl border border-white/10 bg-[#12181c] text-white shadow-xl !important;
+    @apply z-[80] max-h-72 overflow-y-auto rounded-xl border border-white/10 bg-[#12181c] p-1 text-white shadow-xl !important;
   }
 
-  .shad-select-content [role="option"][data-highlighted] {
+  .shad-select-content [role="option"] {
+    min-height: 2.75rem;
+  }
+
+  .shad-select-content [role="option"][data-highlighted],
+  .shad-select-content [role="option"][data-state="checked"] {
     background: rgba(47, 191, 133, 0.16);
     color: #ffffff;
   }
@@ -409,6 +414,28 @@
   }
 }
 
+@keyframes onboard-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes onboard-hero-in {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -436,6 +463,66 @@
   .shad-primary-btn:hover:not(:disabled),
   .shad-danger-btn:hover:not(:disabled) {
     transform: translateY(-1px);
+  }
+
+  .onboard-panel {
+    animation: onboard-fade-up 520ms ease-out both;
+  }
+
+  .onboard-brand {
+    animation: onboard-fade-up 480ms ease-out both;
+    animation-delay: 40ms;
+  }
+
+  .onboard-intro {
+    animation: onboard-fade-up 520ms ease-out both;
+    animation-delay: 90ms;
+  }
+
+  .onboard-fields {
+    animation: onboard-fade-up 560ms ease-out both;
+    animation-delay: 150ms;
+  }
+
+  .onboard-cta {
+    animation: onboard-fade-up 560ms ease-out both;
+    animation-delay: 210ms;
+  }
+
+  .onboard-hero-image {
+    animation: onboard-hero-in 900ms ease-out both;
+  }
+
+  .appointment-panel {
+    animation: onboard-fade-up 520ms ease-out both;
+  }
+
+  .appointment-brand {
+    animation: onboard-fade-up 480ms ease-out both;
+    animation-delay: 40ms;
+  }
+
+  .appointment-intro {
+    animation: onboard-fade-up 520ms ease-out both;
+    animation-delay: 90ms;
+  }
+
+  .appointment-fields {
+    position: relative;
+    z-index: 20;
+    animation: onboard-fade-up 560ms ease-out both;
+    animation-delay: 150ms;
+  }
+
+  .appointment-cta {
+    position: relative;
+    z-index: 1;
+    animation: onboard-fade-up 560ms ease-out both;
+    animation-delay: 210ms;
+  }
+
+  .appointment-hero-image {
+    animation: onboard-hero-in 900ms ease-out both;
   }
 }
 
@@ -472,6 +559,51 @@
 .react-datepicker-wrapper.date-picker {
   display: flex;
   align-items: center;
+  width: 100%;
+}
+
+.react-datepicker-popper,
+.carepulse-datepicker-popper,
+.react-datepicker__portal {
+  z-index: 9999 !important;
+}
+
+.carepulse-datepicker-popper {
+  padding-top: 0.35rem;
+  width: max-content;
+}
+
+.carepulse-datepicker-popper .react-datepicker.carepulse-datepicker,
+.carepulse-datepicker-popper .react-datepicker {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.carepulse-datepicker-popper .react-datepicker__month-container {
+  flex: 1 1 auto !important;
+  width: auto !important;
+}
+
+.react-datepicker__portal {
+  background: rgba(7, 9, 12, 0.72) !important;
+  backdrop-filter: blur(4px);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.react-datepicker.carepulse-datepicker,
+.react-datepicker {
+  display: flex !important;
+  align-items: stretch !important;
+  float: none !important;
+  font-family: inherit !important;
+  border-radius: 1rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background-color: #12181c !important;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5) !important;
+  overflow: hidden !important;
 }
 
 .react-datepicker,
@@ -486,20 +618,53 @@
   color: #c5d0d8 !important;
 }
 
+.react-datepicker__header {
+  padding: 0.75rem 0.5rem 0.5rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.react-datepicker__header--time {
+  padding: 0.75rem 0.5rem !important;
+}
+
 .react-datepicker__current-month,
 .react-datepicker__day-name,
 .react-datepicker-time__header {
   color: #ffffff !important;
+  font-weight: 600 !important;
 }
 
 .react-datepicker__triangle {
-  fill: #12181c !important;
-  color: #12181c !important;
-  stroke: #12181c !important;
+  display: none !important;
 }
 
-.react-datepicker__time-list-item:hover {
-  background-color: rgba(255, 255, 255, 0.06) !important;
+.react-datepicker__month-container {
+  float: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.react-datepicker__month {
+  margin: 0.5rem !important;
+}
+
+.react-datepicker__day-name,
+.react-datepicker__day {
+  width: 2.15rem !important;
+  line-height: 2.15rem !important;
+  margin: 0.12rem !important;
+}
+
+.react-datepicker__day {
+  border-radius: 0.5rem !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: rgba(47, 191, 133, 0.18) !important;
+}
+
+.react-datepicker__input-container {
+  width: 100%;
 }
 
 .react-datepicker__input-container input {
@@ -517,21 +682,58 @@
 .react-datepicker__day--keyboard-selected {
   background-color: #127a56 !important;
   color: #ffffff !important;
-  border-radius: 0.4rem;
-}
-
-.react-datepicker__time-list-item--selected {
-  background-color: #127a56 !important;
-  color: #ffffff !important;
+  border-radius: 0.5rem !important;
 }
 
 .react-datepicker__time-container {
+  float: none !important;
+  display: flex !important;
+  flex-direction: column !important;
   border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+  width: 7rem !important;
+  min-width: 7rem !important;
+}
+
+.react-datepicker__time,
+.react-datepicker__time-box {
+  width: 100% !important;
+  height: auto !important;
+  display: flex !important;
+  flex: 1 1 auto !important;
+  flex-direction: column !important;
+}
+
+.react-datepicker__time-list {
+  height: 14.5rem !important;
+  overflow-y: auto !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
 }
 
 .react-datepicker__time-list-item {
   display: flex !important;
   align-items: center !important;
+  justify-content: center !important;
+  height: 2rem !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+}
+
+.react-datepicker__time-list-item:hover {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.react-datepicker__time-list-item--selected {
+  background-color: #127a56 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #c5d0d8 !important;
 }
 
 .react-datepicker__day:focus-visible,

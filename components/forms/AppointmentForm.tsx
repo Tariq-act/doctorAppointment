@@ -128,18 +128,28 @@ export default function AppointmentForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={type === "create" ? "space-y-5" : "space-y-6"}
+      >
         {type === "create" && (
-          <section className='mb-12 space-y-4'>
+          <section className='appointment-intro mb-2 space-y-3'>
+            <p className='text-12-semibold uppercase tracking-[0.2em] text-brand-mint'>
+              Booking
+            </p>
             <h1 className='header'>New Appointment</h1>
-            <p className='text-dark-700'>
-              Request a new appointment in 10 seconds
+            <p className='max-w-md text-base leading-relaxed text-dark-700'>
+              Choose a doctor and time—we’ll confirm your visit shortly.
             </p>
           </section>
         )}
 
         {type !== "cancel" && (
-          <>
+          <div
+            className={
+              type === "create" ? "appointment-fields space-y-5" : "space-y-6"
+            }
+          >
             <CustomFormField
               fieldType={FormFieldType.SELECT}
               control={form.control}
@@ -159,7 +169,7 @@ export default function AppointmentForm({
               dateFormate='MM/dd/yyyy - h:mm aa'
             />
 
-            <div className='flex flex-col gap-6 xl:flex-row'>
+            <div className='grid gap-5 sm:grid-cols-2'>
               <CustomFormField
                 fieldType={FormFieldType.TEXTAREA}
                 control={form.control}
@@ -176,7 +186,7 @@ export default function AppointmentForm({
                 placeholder='Enter notes'
               />
             </div>
-          </>
+          </div>
         )}
 
         {type === "cancel" && (
@@ -189,14 +199,16 @@ export default function AppointmentForm({
           />
         )}
 
-        <SubmitButton
-          isLoading={isLoading}
-          className={`${
-            type === "cancel" ? "shad-danger-btn" : "shad-primary-btn"
-          } w-full`}
-        >
-          {buttonLabel}
-        </SubmitButton>
+        <div className={type === "create" ? "appointment-cta pt-1" : undefined}>
+          <SubmitButton
+            isLoading={isLoading}
+            className={`${
+              type === "cancel" ? "shad-danger-btn" : "shad-primary-btn"
+            } w-full`}
+          >
+            {type === "create" ? "Request appointment" : buttonLabel}
+          </SubmitButton>
+        </div>
       </form>
     </Form>
   );

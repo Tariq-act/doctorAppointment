@@ -1,15 +1,22 @@
 import RegisterForm from "@/components/forms/RegisterForm";
 import { getDoctors } from "@/lib/actions/doctor.actions";
-import { getUser } from "@/lib/actions/patient.actions";
+import { getPatient, getUser } from "@/lib/actions/patient.actions";
 import { toDoctorOptions } from "@/lib/doctors";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 const Register = async ({ params }: SearchParamProps) => {
   const { userId } = await params;
-  const [user, storedDoctors] = await Promise.all([
+  const [user, storedDoctors, patient] = await Promise.all([
     getUser(userId),
     getDoctors(),
+    getPatient(userId),
   ]);
+
+  if (patient?.$id) {
+    redirect(`/patients/${userId}/new-appointment`);
+  }
+
   const doctors = toDoctorOptions(storedDoctors);
   return (
     <div className='flex h-screen max-h-screen '>
