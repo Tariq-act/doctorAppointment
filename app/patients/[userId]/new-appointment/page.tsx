@@ -1,7 +1,7 @@
 import AppointmentForm from "@/components/forms/AppointmentForm";
 import { getDoctors } from "@/lib/actions/doctor.actions";
 import { getPatient } from "@/lib/actions/patient.actions";
-import { mergeDoctorOptions } from "@/lib/doctors";
+import { toDoctorOptions } from "@/lib/doctors";
 import Image from "next/image";
 
 export default async function NewAppointment({ params }: SearchParamProps) {
@@ -10,7 +10,7 @@ export default async function NewAppointment({ params }: SearchParamProps) {
     getPatient(userId),
     getDoctors(),
   ]);
-  const doctors = mergeDoctorOptions(storedDoctors);
+  const doctors = toDoctorOptions(storedDoctors);
 
   return (
     <div className='flex h-screen max-h-screen '>

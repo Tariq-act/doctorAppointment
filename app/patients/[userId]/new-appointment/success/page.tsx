@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { getAppointment } from "@/lib/actions/appointment.actions";
 import { getDoctors } from "@/lib/actions/doctor.actions";
-import { findDoctorByName, mergeDoctorOptions } from "@/lib/doctors";
+import { findDoctorByName, toDoctorOptions } from "@/lib/doctors";
 import { formatDateTime } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,7 +18,7 @@ const SuccessPage = async ({
     getAppointment(appointmentId),
     getDoctors(),
   ]);
-  const doctors = mergeDoctorOptions(storedDoctors);
+  const doctors = toDoctorOptions(storedDoctors);
   const doctor = findDoctorByName(doctors, appointment.primaryPhysician);
 
   return (

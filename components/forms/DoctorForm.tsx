@@ -1,9 +1,10 @@
 "use client";
 
 import CustomFormField from "@/components/CustomFormField";
+import FileUploader from "@/components/FileUploader";
 import SubmitButton from "@/components/SubmitButton";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
+import { Form, FormControl } from "@/components/ui/form";
 import { createDoctors } from "@/lib/actions/doctor.actions";
 import { DoctorsBatchValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,11 +15,12 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { FormFieldType } from "./PatientForm";
 
-const emptyDoctor = { name: "", image: "" };
+const emptyDoctor = { name: "", image: [] as File[] };
 
 export default function DoctorForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const form = useForm<z.infer<typeof DoctorsBatchValidation>>({
     resolver: zodResolver(DoctorsBatchValidation),
@@ -34,14 +36,34 @@ export default function DoctorForm() {
 
   async function onSubmit(values: z.infer<typeof DoctorsBatchValidation>) {
     setIsLoading(true);
+    setError("");
     try {
-      const result = await createDoctors(values.doctors);
+      const doctors = values.doctors.map((doctor) => {
+        let image: FormData | undefined;
+
+        if (doctor.image && doctor.image.length > 0) {
+          const blobFile = new Blob([doctor.image[0]], {
+            type: doctor.image[0].type,
+          });
+          image = new FormData();
+          image.append("blobFile", blobFile);
+          image.append("fileName", doctor.image[0].name);
+        }
+
+        return {
+          name: doctor.name,
+          image,
+        };
+      });
+
+      const result = await createDoctors(doctors);
       if (result) {
         form.reset({ doctors: [{ ...emptyDoctor }] });
         router.refresh();
       }
-    } catch (error) {
-      console.error(error);
+    } catch (err: any) {
+      console.error(err);
+      setError(err?.message || "Failed to save doctors");
     } finally {
       setIsLoading(false);
     }
@@ -85,11 +107,22 @@ export default function DoctorForm() {
               />
 
               <CustomFormField
-                fieldType={FormFieldType.INPUT}
+                fieldType={FormFieldType.SKELETON}
                 control={form.control}
                 name={`doctors.${index}.image`}
-                label='Photo URL (optional)'
-                placeholder='/assets/images/dr-powell.png'
+                label='Doctor photo'
+                renderSkeleton={(imageField) => (
+                  <FormControl>
+                    <FileUploader
+                      files={imageField.value}
+                      onChange={imageField.onChange}
+                      accept={{
+                        "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"],
+                      }}
+                      hint='PNG, JPG, GIF or WEBP'
+                    />
+                  </FormControl>
+                )}
               />
             </div>
           ))}
@@ -104,6 +137,10 @@ export default function DoctorForm() {
           <Plus className='mr-2 size-4' aria-hidden='true' />
           Add another doctor
         </Button>
+
+        {error && (
+          <p className='shad-error text-14-regular'>{error}</p>
+        )}
 
         <SubmitButton isLoading={isLoading}>Save doctors</SubmitButton>
       </form>

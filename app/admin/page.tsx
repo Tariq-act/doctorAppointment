@@ -1,9 +1,10 @@
-import DoctorForm from "@/components/forms/DoctorForm";
 import AdminAppointmentsTable from "@/components/admin/AdminAppointmentsTable";
+import DoctorList from "@/components/admin/DoctorList";
+import DoctorForm from "@/components/forms/DoctorForm";
 import StatCard from "@/components/ui/StatCard";
 import { getRecentAppointmentList } from "@/lib/actions/appointment.actions";
 import { getDoctors } from "@/lib/actions/doctor.actions";
-import { mergeDoctorOptions } from "@/lib/doctors";
+import { toDoctorOptions } from "@/lib/doctors";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,7 +13,7 @@ const Admin = async () => {
     getRecentAppointmentList(),
     getDoctors(),
   ]);
-  const doctors = mergeDoctorOptions(storedDoctors);
+  const doctors = toDoctorOptions(storedDoctors);
 
   return (
     <div className='mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-8 overflow-x-clip px-4 py-4 sm:px-6 sm:py-6 lg:gap-10 lg:px-8 lg:py-8'>
@@ -74,19 +75,24 @@ const Admin = async () => {
             <p className='text-12-semibold uppercase tracking-[0.2em] text-brand-mint'>
               Doctors
             </p>
-            <h2 className='text-18-semibold text-white'>Add doctors</h2>
+            <h2 className='text-18-semibold text-white'>Manage doctors</h2>
             <p className='max-w-xl text-base leading-relaxed text-dark-700'>
-              Add one or more physicians to the directory. They appear in
-              patient registration and appointment booking.
+              Remove physicians from the directory, or add new ones below. They
+              appear in patient registration and appointment booking.
             </p>
-            {doctors.length > 0 && (
-              <p className='text-14-regular text-dark-600'>
-                {doctors.length} doctor{doctors.length === 1 ? "" : "s"}{" "}
-                available for selection.
-              </p>
-            )}
           </div>
-          <DoctorForm />
+
+          <div className='space-y-3'>
+            <h3 className='text-14-medium text-white'>
+              Directory ({storedDoctors.length})
+            </h3>
+            <DoctorList doctors={storedDoctors} />
+          </div>
+
+          <div className='space-y-4 border-t border-dark-500/60 pt-6'>
+            <h3 className='text-14-medium text-white'>Add doctors</h3>
+            <DoctorForm />
+          </div>
         </section>
 
         <AdminAppointmentsTable

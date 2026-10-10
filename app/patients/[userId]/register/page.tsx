@@ -1,7 +1,7 @@
 import RegisterForm from "@/components/forms/RegisterForm";
 import { getDoctors } from "@/lib/actions/doctor.actions";
 import { getUser } from "@/lib/actions/patient.actions";
-import { mergeDoctorOptions } from "@/lib/doctors";
+import { toDoctorOptions } from "@/lib/doctors";
 import Image from "next/image";
 
 const Register = async ({ params }: SearchParamProps) => {
@@ -10,7 +10,7 @@ const Register = async ({ params }: SearchParamProps) => {
     getUser(userId),
     getDoctors(),
   ]);
-  const doctors = mergeDoctorOptions(storedDoctors);
+  const doctors = toDoctorOptions(storedDoctors);
   return (
     <div className='flex h-screen max-h-screen '>
       <section className='remove-scrollbar container'>
