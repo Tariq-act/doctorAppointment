@@ -47,6 +47,20 @@ function AppointmentDatePicker({
   const isDesktop = useIsDesktop();
   const fieldRef = useRef<HTMLDivElement>(null);
 
+  const syncPopperWidth = () => {
+    const width = fieldRef.current?.getBoundingClientRect().width;
+    if (!width) return;
+
+    requestAnimationFrame(() => {
+      document
+        .querySelectorAll<HTMLElement>(".carepulse-datepicker-popper")
+        .forEach((popper) => {
+          popper.style.width = `${width}px`;
+          popper.style.minWidth = `${width}px`;
+        });
+    });
+  };
+
   return (
     <div ref={fieldRef} className='glass-field relative z-[100]'>
       <Image
@@ -72,20 +86,7 @@ function AppointmentDatePicker({
           popperProps={{
             strategy: "fixed",
           }}
-          popperModifiers={[
-            {
-              name: "matchFieldWidth",
-              enabled: true,
-              phase: "beforeWrite",
-              requires: ["computeStyles"],
-              fn({ state }) {
-                const width = fieldRef.current?.getBoundingClientRect().width;
-                if (!width) return;
-                state.styles.popper.width = `${width}px`;
-                state.styles.popper.minWidth = `${width}px`;
-              },
-            },
-          ]}
+          onCalendarOpen={syncPopperWidth}
           calendarClassName='carepulse-datepicker'
           popperClassName='carepulse-datepicker-popper'
           wrapperClassName='date-picker'
