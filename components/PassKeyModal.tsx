@@ -74,16 +74,21 @@ const PassKeyModal = () => {
         <AlertDialogHeader>
           <AlertDialogTitle className='flex items-start justify-between'>
             Admin Access Verification
-            <Image
-              src={"/assets/icons/close.svg"}
-              alt='close'
-              width={20}
-              height={20}
-              onClick={() => closeModal()}
-              className='cursor-pointer'
-            />
+            <button
+              type='button'
+              onClick={closeModal}
+              aria-label='Close admin verification'
+              className='rounded-md p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald'
+            >
+              <Image
+                src='/assets/icons/close.svg'
+                alt=''
+                width={20}
+                height={20}
+              />
+            </button>
           </AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription className='text-dark-600'>
             To access the admin page, please enter the passkey.
           </AlertDialogDescription>
         </AlertDialogHeader>

@@ -49,14 +49,14 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
   switch (fieldType) {
     case FormFieldType.INPUT:
       return (
-        <div className='flex rounded-md border border-dark-500'>
+        <div className='glass-field'>
           {iconSrc && (
             <Image
               src={iconSrc}
-              height={24}
-              width={24}
-              alt={iconAlt || "icon"}
-              className='ml-2'
+              height={20}
+              width={20}
+              alt={iconAlt || ""}
+              className='ml-3 size-5 shrink-0'
             />
           )}
 
@@ -90,19 +90,19 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
             withCountryCallingCode
             value={field.value as E164Number | undefined}
             onChange={field.onChange}
-            className='input-phone'
+            className='input-phone glass-field'
           />
         </FormControl>
       );
     case FormFieldType.DATE_PICKER:
       return (
-        <div className='flex rounded-md border border-dark-500 bg-dark-400'>
+        <div className='glass-field'>
           <Image
             src='/assets/icons/calendar.svg'
-            width={24}
-            height={24}
-            alt='calender'
-            className='ml-2'
+            width={20}
+            height={20}
+            alt=''
+            className='ml-3 size-5 shrink-0'
           />
           <FormControl>
             <DatePicker

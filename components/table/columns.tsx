@@ -12,13 +12,15 @@ import { Appointment } from "@/types/appwrite.types";
 export const columns: ColumnDef<Appointment>[] = [
   {
     header: "ID",
-    cell: ({ row }) => <p className='text-14-medium'>{row.index + 1}</p>,
+    cell: ({ row }) => (
+      <p className='text-14-medium text-dark-700 tabular-nums'>{row.index + 1}</p>
+    ),
   },
   {
     accessorKey: "patient",
     header: "Patient",
     cell: ({ row }) => (
-      <p className='text-14-medium'>{row.original.patient.name}</p>
+      <p className='text-14-medium text-white'>{row.original.patient.name}</p>
     ),
   },
   {
@@ -35,7 +37,7 @@ export const columns: ColumnDef<Appointment>[] = [
     accessorKey: "schedule",
     header: "Appointment",
     cell: ({ row }) => (
-      <p className='text-14-regular min-w-[100px]'>
+      <p className='text-14-regular min-w-[140px] text-dark-700'>
         {formatDateTime(row.original.schedule).dateTime}
       </p>
     ),
@@ -47,26 +49,39 @@ export const columns: ColumnDef<Appointment>[] = [
       const doctor = Doctors.find(
         (doc) => doc.name === row.original.primaryPhysician
       );
+      const name = doctor?.name ?? row.original.primaryPhysician;
+
       return (
         <div className='flex items-center gap-3'>
-          <Image
-            src={doctor?.image!}
-            alt={doctor?.name!}
-            width={100}
-            height={100}
-            className='size-8'
-          />
-          <p className='whitespace-nowrap'>Dr. {doctor?.name}</p>
+          {doctor?.image ? (
+            <Image
+              src={doctor.image}
+              alt=''
+              width={36}
+              height={36}
+              className='size-9 rounded-full object-cover ring-1 ring-white/20'
+            />
+          ) : (
+            <span
+              aria-hidden='true'
+              className='flex size-9 items-center justify-center rounded-full bg-white/10 text-xs font-semibold text-white ring-1 ring-white/15'
+            >
+              {name?.slice(0, 1) || "Dr"}
+            </span>
+          )}
+          <p className='text-14-medium whitespace-nowrap text-white'>
+            Dr. {name}
+          </p>
         </div>
       );
     },
   },
   {
     id: "actions",
-    header: () => <div className='pl-4'>Actions</div>,
+    header: "Actions",
     cell: ({ row: { original: data } }) => {
       return (
-        <div className='flex gap-1'>
+        <div className='flex flex-wrap justify-end gap-1 md:justify-start'>
           <AppointmentModal
             type='schedule'
             patientId={data.patient.$id}

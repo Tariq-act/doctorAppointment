@@ -2,9 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ========================================== TAILWIND STYLES */
+/* ========================================== DESIGN TOKENS */
+:root {
+  --bg-canvas: #07090c;
+  --surface: rgba(16, 22, 26, 0.62);
+  --surface-solid: #12181c;
+  --surface-input: rgba(8, 12, 14, 0.78);
+  --glass-blur: 16px;
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --shadow-glass: 0 18px 50px rgba(0, 0, 0, 0.32);
+  --text-primary: #f4f7f8;
+  --text-secondary: #c5d0d8;
+  --text-muted: #9aa7b2;
+  --emerald: #2fbf85;
+  --emerald-action: #127a56;
+  --emerald-action-hover: #168a62;
+  --status-scheduled: #7ee0b8;
+  --status-pending: #9ec9ef;
+  --status-cancelled: #ffb1ac;
+  --status-amber: #e4c07a;
+  --focus: rgba(47, 191, 133, 0.45);
+  --radius-control: 0.875rem;
+  --radius-panel: 1.25rem;
+  color-scheme: dark;
+}
+
 @layer base {
-  /* Remove scrollbar */
   .remove-scrollbar::-webkit-scrollbar {
     width: 0px;
     height: 0px;
@@ -21,13 +45,84 @@
   }
 
   .remove-scrollbar::-webkit-scrollbar-thumb:hover {
-    /* background: #1e2238; */
     background: transparent;
   }
 }
 
+@layer components {
+  .app-shell {
+    background-color: var(--bg-canvas);
+    background-image:
+      radial-gradient(
+        980px 520px at -8% -12%,
+        rgba(47, 191, 133, 0.16),
+        transparent 58%
+      ),
+      radial-gradient(
+        720px 420px at 108% 0%,
+        rgba(47, 191, 133, 0.07),
+        transparent 52%
+      ),
+      radial-gradient(
+        640px 380px at 78% 112%,
+        rgba(121, 181, 236, 0.06),
+        transparent 55%
+      );
+    color: var(--text-primary);
+  }
+
+  .glass-panel {
+    background: var(--surface);
+    border: 1px solid var(--border-subtle);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      var(--shadow-glass);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.25);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.25);
+  }
+
+  .glass-field {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 3rem;
+    border-radius: var(--radius-control);
+    border: 1px solid var(--border-strong);
+    background: var(--surface-input);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      background-color 160ms ease;
+  }
+
+  .glass-field:focus-within {
+    border-color: rgba(47, 191, 133, 0.8);
+    background: rgba(8, 12, 14, 0.92);
+    box-shadow: 0 0 0 3px var(--focus);
+  }
+
+  .glass-field[aria-invalid="true"],
+  .glass-field:has([aria-invalid="true"]) {
+    border-color: rgba(242, 78, 67, 0.85);
+    box-shadow: 0 0 0 3px rgba(242, 78, 67, 0.22);
+  }
+
+  .glass-field:has(:disabled) {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+}
+
+@supports not (
+  (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))
+) {
+  .glass-panel {
+    background: var(--surface-solid);
+  }
+}
+
 @layer utilities {
-  /* ===== UTILITIES */
   .sidebar {
     @apply remove-scrollbar w-full max-w-72 flex-col overflow-auto bg-black-800 px-7 py-10;
   }
@@ -45,23 +140,23 @@
   }
 
   .bg-image {
-    @apply bg-black-900 bg-light-rays bg-cover bg-no-repeat;
+    @apply bg-dark-300 bg-cover bg-no-repeat;
   }
 
   .header {
-    @apply text-32-bold md:text-36-bold;
+    @apply text-32-bold tracking-tight text-white md:text-36-bold;
   }
 
   .sub-header {
-    @apply text-18-bold md:text-24-bold;
+    @apply text-18-bold tracking-tight text-white md:text-24-bold;
   }
 
   .container {
-    @apply relative flex-1 overflow-y-auto px-[5%];
+    @apply relative flex-1 overflow-y-auto px-4 sm:px-8 lg:px-[5%];
   }
 
   .sub-container {
-    @apply mx-auto flex size-full flex-col py-10;
+    @apply mx-auto flex size-full flex-col py-8 sm:py-10;
   }
 
   .side-img {
@@ -72,66 +167,97 @@
     @apply text-14-regular justify-items-end text-center text-dark-600 xl:text-left;
   }
 
-  /* ==== SUCCESS */
   .success-img {
     @apply m-auto flex flex-1 flex-col items-center justify-between gap-10 py-10;
   }
 
   .request-details {
-    @apply flex w-full flex-col items-center gap-8 border-y-2 border-dark-400 py-8 md:w-fit md:flex-row;
+    @apply flex w-full flex-col items-center gap-8 border-y border-white/10 py-8 md:w-fit md:flex-row;
   }
 
-  /* ===== ADMIN */
   .admin-header {
-    @apply sticky top-3 z-20 mx-3 flex items-center justify-between rounded-2xl bg-dark-200 px-[5%] py-5 shadow-lg xl:px-12;
+    background-color: rgba(8, 12, 15, 0.96);
+    @apply sticky top-4 z-20 flex flex-wrap items-center justify-between gap-3 rounded-2xl px-4 py-3.5 sm:px-6;
   }
 
   .admin-main {
-    @apply flex flex-col items-center space-y-6 px-[5%] pb-12 xl:space-y-12 xl:px-12;
+    @apply flex w-full flex-col gap-8 pb-8 lg:gap-10 lg:pb-12;
   }
 
   .admin-stat {
-    @apply flex w-full flex-col justify-between gap-5 sm:flex-row xl:gap-10;
+    @apply grid w-full grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3;
   }
 
-  /* ==== FORM */
   .radio-group {
-    @apply flex h-full flex-1 items-center gap-2 rounded-md border border-dashed border-dark-500 bg-dark-400 p-3;
+    @apply flex h-full flex-1 items-center gap-2 rounded-xl border border-dashed border-white/15 bg-white/[0.03] p-3;
   }
 
   .checkbox-label {
     @apply cursor-pointer text-sm font-medium text-dark-700 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none;
   }
 
-  /* ==== File Upload */
   .file-upload {
-    @apply text-12-regular flex cursor-pointer  flex-col items-center justify-center gap-3 rounded-md border border-dashed border-dark-500 bg-dark-400 p-5;
+    @apply text-12-regular flex cursor-pointer flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-white/15 bg-white/[0.03] p-5;
   }
 
   .file-upload_label {
     @apply flex flex-col justify-center gap-2 text-center text-dark-600;
   }
 
-  /* ==== Stat Card */
   .stat-card {
-    @apply flex flex-1 flex-col gap-6 rounded-2xl bg-cover p-6 shadow-lg;
+    @apply relative flex min-w-0 flex-col gap-8 overflow-hidden rounded-2xl p-5 sm:p-6;
   }
 
-  /* ==== Status Badge */
+  .stat-card--appointments {
+    --stat-accent: var(--status-amber);
+  }
+
+  .stat-card--pending {
+    --stat-accent: #79b5ec;
+  }
+
+  .stat-card--cancelled {
+    --stat-accent: #f37877;
+  }
+
+  .stat-icon {
+    @apply grid size-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04];
+  }
+
   .status-badge {
-    @apply flex w-fit items-center gap-2 rounded-full px-4 py-2;
+    @apply inline-flex w-fit items-center gap-2 rounded-full border px-3 py-1.5;
   }
 
-  /* Data Table */
+  .status-badge--scheduled {
+    color: var(--status-scheduled);
+    background: rgba(47, 191, 133, 0.12);
+    border-color: rgba(47, 191, 133, 0.34);
+  }
+
+  .status-badge--pending {
+    color: var(--status-pending);
+    background: rgba(121, 181, 236, 0.12);
+    border-color: rgba(121, 181, 236, 0.34);
+  }
+
+  .status-badge--cancelled {
+    color: var(--status-cancelled);
+    background: rgba(243, 120, 119, 0.12);
+    border-color: rgba(243, 120, 119, 0.36);
+  }
+
   .data-table {
-    @apply z-10 w-full overflow-hidden rounded-lg border border-dark-400 shadow-lg;
+    @apply w-full min-w-0 overflow-hidden rounded-2xl;
   }
 
   .table-actions {
-    @apply flex w-full items-center justify-between space-x-2 p-4;
+    @apply flex w-full flex-wrap items-center justify-between gap-3 border-t border-white/10 px-4 py-4 sm:px-5;
   }
 
-  /* ===== ALIGNMENTS */
+  .appointment-card {
+    @apply rounded-2xl border border-white/10 bg-white/[0.03] p-4;
+  }
+
   .flex-center {
     @apply flex items-center justify-center;
   }
@@ -140,7 +266,6 @@
     @apply flex items-center justify-between;
   }
 
-  /* ===== TYPOGRAPHY */
   .text-36-bold {
     @apply text-[36px] leading-[40px] font-bold;
   }
@@ -162,7 +287,7 @@
   }
 
   .text-16-regular {
-    @apply text-[16px] leading-[20px] font-normal;
+    @apply text-[16px] leading-[24px] font-normal;
   }
 
   .text-14-medium {
@@ -170,7 +295,7 @@
   }
 
   .text-14-regular {
-    @apply text-[14px] leading-[18px] font-normal;
+    @apply text-[14px] leading-[20px] font-normal;
   }
 
   .text-12-regular {
@@ -181,33 +306,33 @@
     @apply text-[12px] leading-[16px] font-semibold;
   }
 
-  /* =====  SHADCN OVERRIDES */
   .shad-primary-btn {
-    @apply bg-green-500 text-white !important;
+    background-color: var(--emerald-action) !important;
+    @apply h-12 rounded-xl text-sm font-semibold text-white shadow-[0_10px_28px_rgba(18,122,86,0.32)] transition hover:bg-brand-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-mint focus-visible:ring-offset-2 focus-visible:ring-offset-[#07090c] disabled:cursor-not-allowed disabled:opacity-50 !important;
   }
 
   .shad-danger-btn {
-    @apply bg-red-700 text-white !important;
+    @apply h-12 rounded-xl bg-[#9E2B24] text-sm font-semibold text-white shadow-[0_10px_28px_rgba(158,43,36,0.28)] transition hover:bg-[#B4332B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFB1AC] focus-visible:ring-offset-2 focus-visible:ring-offset-[#07090c] disabled:cursor-not-allowed disabled:opacity-50 !important;
   }
 
   .shad-gray-btn {
-    @apply border border-dark-500 cursor-pointer bg-dark-400 text-white !important;
+    @apply h-11 cursor-pointer rounded-xl border border-white/15 bg-white/5 text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald focus-visible:ring-offset-2 focus-visible:ring-offset-[#101418] disabled:cursor-not-allowed disabled:opacity-40 !important;
   }
 
   .shad-input-label {
-    @apply text-14-medium text-dark-700 !important;
+    @apply text-14-medium text-white !important;
   }
 
   .shad-input {
-    @apply bg-dark-400 placeholder:text-dark-600 border-dark-500 h-11 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
+    @apply h-12 border-0 bg-transparent text-sm font-medium text-white shadow-none placeholder:text-dark-600 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
   }
 
   .shad-input-icon {
-    @apply bg-dark-400 placeholder:text-dark-600 border-dark-500 h-11 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
+    @apply h-12 border-0 bg-transparent text-sm font-medium text-white placeholder:text-dark-600 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 !important;
   }
 
   .shad-textArea {
-    @apply bg-dark-400 placeholder:text-dark-600 border-dark-500 focus-visible:ring-0 focus-visible:ring-offset-0 !important;
+    @apply min-h-[7.5rem] rounded-xl border border-white/15 bg-[var(--surface-input)] text-sm text-white placeholder:text-dark-600 focus-visible:border-brand-emerald/80 focus-visible:ring-2 focus-visible:ring-brand-emerald/40 focus-visible:ring-offset-0 !important;
   }
 
   .shad-combobox-item {
@@ -215,69 +340,135 @@
   }
 
   .shad-combobox-trigger {
-    @apply h-11 !important;
+    @apply h-12 !important;
   }
 
   .shad-select-trigger {
-    @apply bg-dark-400  placeholder:text-dark-600 border-dark-500 h-11 focus:ring-0 focus:ring-offset-0 !important;
+    @apply h-12 rounded-xl border border-white/15 bg-[var(--surface-input)] text-white placeholder:text-dark-600 focus:ring-2 focus:ring-brand-emerald/40 focus:ring-offset-0 focus-visible:ring-2 focus-visible:ring-brand-emerald/40 focus-visible:ring-offset-0 !important;
   }
 
   .shad-select-content {
-    @apply bg-dark-400 border-dark-500 !important;
+    @apply rounded-xl border border-white/10 bg-[#12181c] text-white shadow-xl !important;
+  }
+
+  .shad-select-content [role="option"][data-highlighted] {
+    background: rgba(47, 191, 133, 0.16);
+    color: #ffffff;
+  }
+
+  .shad-select-trigger[data-placeholder] {
+    color: var(--text-muted);
   }
 
   .shad-dialog {
-    @apply bg-dark-400 border-dark-500 !important;
+    @apply w-[calc(100%-2rem)] rounded-2xl border border-white/10 bg-[#10161a]/95 text-white shadow-[0_24px_80px_rgba(0,0,0,0.45)] backdrop-blur-lg !important;
   }
 
   .shad-dialog button {
-    @apply focus:ring-0 focus:ring-offset-0 focus-visible:border-none focus-visible:outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 !important;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald focus-visible:ring-offset-2 focus-visible:ring-offset-[#10161a] !important;
   }
 
   .shad-error {
-    @apply text-red-400 !important;
+    @apply text-sm font-medium text-[#FFB4AE] !important;
   }
 
   .shad-table {
-    @apply rounded-lg overflow-hidden !important;
+    @apply min-w-[760px] overflow-hidden rounded-none !important;
   }
 
   .shad-table-row-header {
-    @apply border-b border-dark-400 text-light-200 hover:bg-transparent !important;
+    @apply border-b border-white/10 text-dark-600 hover:bg-transparent !important;
   }
 
   .shad-table-row {
-    @apply border-b border-dark-400 text-light-200 !important;
+    @apply border-b border-white/[0.06] text-white transition-colors hover:bg-white/[0.035] !important;
   }
 
   .shad-otp {
-    @apply w-full flex justify-between !important;
+    @apply flex w-full justify-between gap-1 sm:gap-2 !important;
   }
 
   .shad-otp-slot {
-    @apply text-36-bold justify-center flex border border-dark-500 rounded-lg size-16 gap-4 !important;
+    @apply flex size-11 items-center justify-center rounded-xl border border-white/15 bg-[#0c1014] text-xl font-semibold text-white sm:size-14 sm:text-2xl !important;
   }
 
   .shad-alert-dialog {
-    @apply space-y-5 bg-dark-400 border-dark-500 outline-none !important;
+    @apply w-[calc(100%-2rem)] max-w-md space-y-5 rounded-2xl border border-white/10 bg-[#10161a]/95 text-white shadow-[0_24px_80px_rgba(0,0,0,0.45)] outline-none backdrop-blur-lg !important;
   }
 
   .shad-sheet-content button {
-    @apply top-2 focus:ring-0 focus:ring-offset-0 focus-visible:border-none focus-visible:outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 !important;
+    @apply top-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald focus-visible:ring-offset-2 focus-visible:ring-offset-[#10161a] !important;
   }
 
-  /* =====  REACT PHONE NUMBER INPUT OVERRIDES */
   .input-phone {
-    @apply mt-2 h-11 rounded-md px-3 text-sm border bg-dark-400 placeholder:text-dark-600 border-dark-500 !important;
+    @apply w-full px-3 text-sm !important;
   }
 
-  /* =====  REACT DATE PICKER OVERRIDES */
   .date-picker {
-    @apply overflow-hidden border-transparent w-full placeholder:text-dark-600  h-11 text-14-medium rounded-md px-3 outline-none !important;
+    @apply h-12 w-full overflow-hidden rounded-md border-transparent px-3 text-14-medium text-white outline-none placeholder:text-dark-600 !important;
   }
 }
 
-/* =====  REACT-DATEPICKER OVERRIDES */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stat-card {
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+
+  .shad-primary-btn:hover:not(:disabled),
+  .shad-danger-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+}
+
+.stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1.25rem;
+  right: 1.25rem;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--stat-accent),
+    transparent
+  );
+}
+
+.stat-card--appointments .stat-icon {
+  background: rgba(228, 192, 122, 0.14);
+  border-color: rgba(228, 192, 122, 0.36);
+}
+
+.stat-card--pending .stat-icon {
+  background: rgba(121, 181, 236, 0.14);
+  border-color: rgba(121, 181, 236, 0.36);
+}
+
+.stat-card--cancelled .stat-icon {
+  background: rgba(243, 120, 119, 0.14);
+  border-color: rgba(243, 120, 119, 0.36);
+}
+
 .react-datepicker-wrapper.date-picker {
   display: flex;
   align-items: center;
@@ -290,9 +481,9 @@
 .react-datepicker__day-name,
 .react-datepicker__day,
 .react-datepicker-time__header {
-  background-color: #1a1d21 !important;
-  border-color: #363a3d !important;
-  color: #abb8c4 !important;
+  background-color: #12181c !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #c5d0d8 !important;
 }
 
 .react-datepicker__current-month,
@@ -302,33 +493,40 @@
 }
 
 .react-datepicker__triangle {
-  fill: #1a1d21 !important;
-  color: #1a1d21 !important;
-  stroke: #1a1d21 !important;
+  fill: #12181c !important;
+  color: #12181c !important;
+  stroke: #12181c !important;
 }
 
 .react-datepicker__time-list-item:hover {
-  background-color: #363a3d !important;
+  background-color: rgba(255, 255, 255, 0.06) !important;
 }
 
 .react-datepicker__input-container input {
-  background-color: #1a1d21 !important;
+  background-color: transparent !important;
+  color: #f4f7f8 !important;
   width: 100%;
   outline: none;
 }
 
-.react-datepicker__day--selected {
-  background-color: #24ae7c !important;
+.react-datepicker__input-container input::placeholder {
+  color: #9aa7b2;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: #127a56 !important;
   color: #ffffff !important;
-  border-radius: 4px;
+  border-radius: 0.4rem;
 }
 
 .react-datepicker__time-list-item--selected {
-  background-color: #24ae7c !important;
+  background-color: #127a56 !important;
+  color: #ffffff !important;
 }
 
 .react-datepicker__time-container {
-  border-left: 1px solid #363a3d !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 .react-datepicker__time-list-item {
@@ -336,15 +534,37 @@
   align-items: center !important;
 }
 
-/* =====  REACT PHONE NUMBER INPUT OVERRIDES */
+.react-datepicker__day:focus-visible,
+.react-datepicker__time-list-item:focus-visible {
+  outline: 2px solid #2fbf85;
+  outline-offset: 2px;
+}
+
 .PhoneInputInput {
   outline: none;
   margin-left: 4px;
-  background: #1a1d21;
+  background: transparent;
+  color: #f4f7f8;
   font-size: 14px;
   font-weight: 500;
+  width: 100%;
+  min-width: 0;
 }
 
 .PhoneInputInput::placeholder {
-  color: #1a1d21;
+  color: #9aa7b2;
+}
+
+.PhoneInputInput:focus-visible {
+  outline: none;
+}
+
+.PhoneInputCountrySelectArrow {
+  border-color: #c5d0d8;
+  opacity: 0.85;
+}
+
+.PhoneInputCountrySelect:focus-visible + .PhoneInputCountryIcon {
+  box-shadow: 0 0 0 2px rgba(47, 191, 133, 0.7);
+  border-radius: 2px;
 }

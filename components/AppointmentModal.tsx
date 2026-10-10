@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
 import AppointmentForm from "./forms/AppointmentForm";
 import { Appointment } from "@/types/appwrite.types";
 
@@ -31,7 +32,12 @@ const AppointmentModal = ({
       <DialogTrigger asChild>
         <Button
           variant='ghost'
-          className={`capitalize ${type === "schedule" && "text-green-500"}`}
+          className={cn(
+            "h-9 rounded-full px-3.5 text-xs font-semibold capitalize",
+            type === "schedule"
+              ? "text-brand-mint hover:bg-brand-emerald/10"
+              : "text-[#FFB1AC] hover:bg-[#F24E43]/10"
+          )}
         >
           {type}
         </Button>
@@ -39,7 +45,7 @@ const AppointmentModal = ({
       <DialogContent className='shad-dialog sm:max-w-md'>
         <DialogHeader className='mb-4 space-y-3'>
           <DialogTitle className='capitalize'>{type} Appointment</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className='text-dark-600'>
             Please fill in the following details to {type} an appointment
           </DialogDescription>
         </DialogHeader>
