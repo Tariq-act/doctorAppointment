@@ -5,18 +5,17 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
-import { Doctors } from "@/constants";
+import DoctorSelectOptions from "@/components/DoctorSelectOptions";
+import { DoctorOption } from "@/lib/doctors";
 import {
   createAppointment,
   updateAppointment,
 } from "@/lib/actions/appointment.actions";
 import { getAppointmentSchema } from "@/lib/validation";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
-import { SelectItem } from "../ui/select";
 import { FormFieldType } from "./PatientForm";
 import { Appointment } from "@/types/appwrite.types";
 
@@ -26,12 +25,14 @@ export default function AppointmentForm({
   type = "create",
   appointment,
   setOpen,
+  doctors,
 }: {
   userId: string;
   patientId: string;
   type: "create" | "cancel" | "schedule";
   appointment?: Appointment;
   setOpen?: Dispatch<SetStateAction<boolean>>;
+  doctors: DoctorOption[];
 }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -146,20 +147,7 @@ export default function AppointmentForm({
               label='Doctor'
               placeholder='Select a Doctor'
             >
-              {Doctors.map((doctor) => (
-                <SelectItem key={doctor.name} value={doctor.name}>
-                  <div className='flex cursor-pointer items-center gap-2'>
-                    <Image
-                      src={doctor.image}
-                      width={32}
-                      height={32}
-                      alt={doctor.name}
-                      className='rounded-full border border-dark-500'
-                    />
-                    <p>{doctor.name}</p>
-                  </div>
-                </SelectItem>
-              ))}
+              <DoctorSelectOptions doctors={doctors} />
             </CustomFormField>
 
             <CustomFormField

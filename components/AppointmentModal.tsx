@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import AppointmentForm from "./forms/AppointmentForm";
+import { DoctorOption } from "@/lib/doctors";
 import { Appointment } from "@/types/appwrite.types";
 
 const AppointmentModal = ({
@@ -19,11 +20,13 @@ const AppointmentModal = ({
   patientId,
   userId,
   appointment,
+  doctors,
 }: {
   type: "schedule" | "cancel";
   patientId: string;
   userId: string;
   appointment?: Appointment;
+  doctors: DoctorOption[];
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -56,6 +59,7 @@ const AppointmentModal = ({
           type={type}
           appointment={appointment}
           setOpen={setOpen}
+          doctors={doctors}
         />
       </DialogContent>
     </Dialog>

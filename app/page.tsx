@@ -15,11 +15,12 @@ export default async function Home({ searchParams }: SearchParamProps) {
         <div className='sub-container max-w-[32rem]'>
           <Image
             src='/assets/icons/logo-full.svg'
-            height={40}
-            width={162}
+            height={38}
+            width={164}
             alt='CarePulse'
             priority
             className='mb-10 h-10 w-auto'
+            style={{ width: "auto", height: "auto" }}
           />
 
           <PatientForm />
