@@ -37,15 +37,14 @@ const PassKeyModal = () => {
 
   useEffect(() => {
     const accessKey = encryptedKey && decryptKey(encryptedKey);
-    if (path) {
-      if (accessKey === process.env.NEXT_PUBLIC_ADMIN_PASSKEY) {
-        setOpen(false);
-        router.push("/admin");
-      } else {
-        setOpen(true);
-      }
+
+    if (accessKey === process.env.NEXT_PUBLIC_ADMIN_PASSKEY) {
+      setOpen(false);
+      router.push("/admin");
+    } else {
+      setOpen(true);
     }
-  }, [encryptedKey]);
+  }, [encryptedKey, path, router]);
 
   const validatePassKey = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -58,6 +57,7 @@ const PassKeyModal = () => {
       localStorage.setItem("accessKey", encryptedKey);
 
       setOpen(false);
+      router.push("/admin");
     } else {
       setError("Invalid passkey, Please try again.");
     }
@@ -74,16 +74,21 @@ const PassKeyModal = () => {
         <AlertDialogHeader>
           <AlertDialogTitle className='flex items-start justify-between'>
             Admin Access Verification
-            <Image
-              src={"/assets/icons/close.svg"}
-              alt='close'
-              width={20}
-              height={20}
-              onClick={() => closeModal()}
-              className='cursor-pointer'
-            />
+            <button
+              type='button'
+              onClick={closeModal}
+              aria-label='Close admin verification'
+              className='rounded-md p-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-emerald'
+            >
+              <Image
+                src='/assets/icons/close.svg'
+                alt=''
+                width={20}
+                height={20}
+              />
+            </button>
           </AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription className='text-dark-600'>
             To access the admin page, please enter the passkey.
           </AlertDialogDescription>
         </AlertDialogHeader>

@@ -1,11 +1,12 @@
 "use client";
 
+import DoctorSelectOptions from "@/components/DoctorSelectOptions";
 import {
-  Doctors,
   GenderOptions,
   IdentificationTypes,
   PatientFormDefaultValues,
 } from "@/constants";
+import { DoctorOption } from "@/lib/doctors";
 import { registerPatient } from "@/lib/actions/patient.actions";
 import { PatientFormValidation } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,7 +24,13 @@ import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { SelectItem } from "../ui/select";
 import { FormFieldType } from "./PatientForm";
 
-function RegisterForm({ user }: { user: User }) {
+function RegisterForm({
+  user,
+  doctors,
+}: {
+  user: User;
+  doctors: DoctorOption[];
+}) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -202,20 +209,7 @@ function RegisterForm({ user }: { user: User }) {
             label='Primary Physician'
             placeholder='Select a physician'
           >
-            {Doctors.map((doctor) => (
-              <SelectItem key={doctor.name} value={doctor.name}>
-                <div className='flex cursor-pointer items-center gap-2'>
-                  <Image
-                    src={doctor.image}
-                    width={32}
-                    height={32}
-                    alt={doctor.name}
-                    className='rounded-full border border-dark-500'
-                  />
-                  <p>{doctor.name}</p>
-                </div>
-              </SelectItem>
-            ))}
+            <DoctorSelectOptions doctors={doctors} />
           </CustomFormField>
 
           <div className='flex flex-col gap-6 xl:flex-row'>

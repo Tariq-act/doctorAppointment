@@ -5,18 +5,17 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Form } from "@/components/ui/form";
-import { Doctors } from "@/constants";
+import DoctorSelectOptions from "@/components/DoctorSelectOptions";
+import { DoctorOption } from "@/lib/doctors";
 import {
   createAppointment,
   updateAppointment,
 } from "@/lib/actions/appointment.actions";
 import { getAppointmentSchema } from "@/lib/validation";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import CustomFormField from "../CustomFormField";
 import SubmitButton from "../SubmitButton";
-import { SelectItem } from "../ui/select";
 import { FormFieldType } from "./PatientForm";
 import { Appointment } from "@/types/appwrite.types";
 
@@ -26,12 +25,14 @@ export default function AppointmentForm({
   type = "create",
   appointment,
   setOpen,
+  doctors,
 }: {
   userId: string;
   patientId: string;
   type: "create" | "cancel" | "schedule";
   appointment?: Appointment;
   setOpen?: Dispatch<SetStateAction<boolean>>;
+  doctors: DoctorOption[];
 }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -127,18 +128,28 @@ export default function AppointmentForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={type === "create" ? "space-y-5" : "space-y-6"}
+      >
         {type === "create" && (
-          <section className='mb-12 space-y-4'>
+          <section className='appointment-intro mb-2 space-y-3'>
+            <p className='text-12-semibold uppercase tracking-[0.2em] text-brand-mint'>
+              Booking
+            </p>
             <h1 className='header'>New Appointment</h1>
-            <p className='text-dark-700'>
-              Request a new appointment in 10 seconds
+            <p className='max-w-md text-base leading-relaxed text-dark-700'>
+              Choose a doctor and time—we’ll confirm your visit shortly.
             </p>
           </section>
         )}
 
         {type !== "cancel" && (
-          <>
+          <div
+            className={
+              type === "create" ? "appointment-fields space-y-5" : "space-y-6"
+            }
+          >
             <CustomFormField
               fieldType={FormFieldType.SELECT}
               control={form.control}
@@ -146,20 +157,7 @@ export default function AppointmentForm({
               label='Doctor'
               placeholder='Select a Doctor'
             >
-              {Doctors.map((doctor) => (
-                <SelectItem key={doctor.name} value={doctor.name}>
-                  <div className='flex cursor-pointer items-center gap-2'>
-                    <Image
-                      src={doctor.image}
-                      width={32}
-                      height={32}
-                      alt={doctor.name}
-                      className='rounded-full border border-dark-500'
-                    />
-                    <p>{doctor.name}</p>
-                  </div>
-                </SelectItem>
-              ))}
+              <DoctorSelectOptions doctors={doctors} />
             </CustomFormField>
 
             <CustomFormField
@@ -171,7 +169,7 @@ export default function AppointmentForm({
               dateFormate='MM/dd/yyyy - h:mm aa'
             />
 
-            <div className='flex flex-col gap-6 xl:flex-row'>
+            <div className='grid gap-5 sm:grid-cols-2'>
               <CustomFormField
                 fieldType={FormFieldType.TEXTAREA}
                 control={form.control}
@@ -188,7 +186,7 @@ export default function AppointmentForm({
                 placeholder='Enter notes'
               />
             </div>
-          </>
+          </div>
         )}
 
         {type === "cancel" && (
@@ -201,14 +199,16 @@ export default function AppointmentForm({
           />
         )}
 
-        <SubmitButton
-          isLoading={isLoading}
-          className={`${
-            type === "cancel" ? "shad-danger-btn" : "shad-primary-btn"
-          } w-full`}
-        >
-          {buttonLabel}
-        </SubmitButton>
+        <div className={type === "create" ? "appointment-cta pt-1" : undefined}>
+          <SubmitButton
+            isLoading={isLoading}
+            className={`${
+              type === "cancel" ? "shad-danger-btn" : "shad-primary-btn"
+            } w-full`}
+          >
+            {type === "create" ? "Request appointment" : buttonLabel}
+          </SubmitButton>
+        </div>
       </form>
     </Form>
   );

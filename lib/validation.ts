@@ -116,3 +116,17 @@ export function getAppointmentSchema(type: string) {
       return ScheduleAppointmentSchema;
   }
 }
+
+export const DoctorEntryValidation = z.object({
+  name: z
+    .string()
+    .min(2, "Name must be at least 2 characters")
+    .max(80, "Name must be at most 80 characters"),
+  image: z.custom<File[]>().optional(),
+});
+
+export const DoctorsBatchValidation = z.object({
+  doctors: z
+    .array(DoctorEntryValidation)
+    .min(1, "Add at least one doctor"),
+});

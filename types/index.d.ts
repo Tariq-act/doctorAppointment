@@ -54,3 +54,8 @@ declare type UpdateAppointmentParams = {
   appointment: Appointment;
   type: string;
 };
+
+declare interface CreateDoctorParams {
+  name: string;
+  image?: FormData;
+}

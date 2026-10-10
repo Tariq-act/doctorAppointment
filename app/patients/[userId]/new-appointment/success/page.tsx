@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Doctors } from "@/constants";
 import { getAppointment } from "@/lib/actions/appointment.actions";
+import { getDoctors } from "@/lib/actions/doctor.actions";
+import { findDoctorByName, toDoctorOptions } from "@/lib/doctors";
 import { formatDateTime } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,21 +14,24 @@ const SuccessPage = async ({
   const { userId } = await params;
   const { appointmentId: appointmentIdParam } = await searchParams;
   const appointmentId = (appointmentIdParam as string) || "";
-  const appointment = await getAppointment(appointmentId);
-  const doctor = Doctors.find(
-    (doc) => doc.name === appointment.primaryPhysician
-  );
+  const [appointment, storedDoctors] = await Promise.all([
+    getAppointment(appointmentId),
+    getDoctors(),
+  ]);
+  const doctors = toDoctorOptions(storedDoctors);
+  const doctor = findDoctorByName(doctors, appointment.primaryPhysician);
 
   return (
     <div className='flex h-screen max-h-screen px-[5%]'>
       <div className='success-img'>
         <Link href={"/"}>
           <Image
-            src={"/assets/icons/logo-full.svg"}
-            height={1000}
-            width={1000}
-            alt='logo'
-            className='h-10 w-fit'
+            src='/assets/icons/logo-full.svg'
+            height={38}
+            width={164}
+            alt='CarePulse'
+            className='h-10 w-auto'
+            style={{ width: "auto", height: "auto" }}
           />
         </Link>
 
@@ -48,14 +52,18 @@ const SuccessPage = async ({
         <section className='request-details'>
           <p>Requested appointment details:</p>
           <div className='flex items-center gap-3'>
-            <Image
-              src={doctor?.image!}
-              alt='doctor'
-              width={100}
-              height={100}
-              className='size-6'
-            />
-            <p className='whitespace-nowrap'>Dr. {doctor?.name}</p>
+            {doctor?.image && (
+              <Image
+                src={doctor.image}
+                alt='doctor'
+                width={100}
+                height={100}
+                className='size-6 rounded-full object-cover'
+              />
+            )}
+            <p className='whitespace-nowrap'>
+              Dr. {doctor?.name ?? appointment.primaryPhysician}
+            </p>
           </div>
           <div className='flex gap-2'>
             <Image

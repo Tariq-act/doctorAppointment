@@ -21,7 +21,7 @@ const SubmitButton = ({ isLoading, className, children }: ButtonProps) => {
             alt='loader'
             width={24}
             height={24}
-            className='animate-spin'
+            className='animate-spin motion-reduce:animate-none'
           />
           Loading...
         </div>

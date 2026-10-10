@@ -1,23 +1,37 @@
 import RegisterForm from "@/components/forms/RegisterForm";
-import { getUser } from "@/lib/actions/patient.actions";
+import { getDoctors } from "@/lib/actions/doctor.actions";
+import { getPatient, getUser } from "@/lib/actions/patient.actions";
+import { toDoctorOptions } from "@/lib/doctors";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 const Register = async ({ params }: SearchParamProps) => {
   const { userId } = await params;
-  const user = await getUser(userId);
+  const [user, storedDoctors, patient] = await Promise.all([
+    getUser(userId),
+    getDoctors(),
+    getPatient(userId),
+  ]);
+
+  if (patient?.$id) {
+    redirect(`/patients/${userId}/new-appointment`);
+  }
+
+  const doctors = toDoctorOptions(storedDoctors);
   return (
     <div className='flex h-screen max-h-screen '>
       <section className='remove-scrollbar container'>
         <div className='sub-container max-w-[860px] flex-1 flex-col py-10'>
           <Image
-            src={"/assets/icons/logo-full.svg"}
-            height={1000}
-            width={1000}
-            alt='patient'
-            className='mb-12 h-10 w-fit'
+            src='/assets/icons/logo-full.svg'
+            height={38}
+            width={164}
+            alt='CarePulse'
+            className='mb-12 h-10 w-auto'
+            style={{ width: "auto", height: "auto" }}
           />
 
-          <RegisterForm user={user} />
+          <RegisterForm user={user} doctors={doctors} />
 
           <p className='copyright py-12'>© 2024 CarePlus</p>
         </div>

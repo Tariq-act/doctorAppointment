@@ -8,29 +8,24 @@ interface StatCardProps {
   icon: string;
 }
 
+const toneClass = {
+  appointments: "stat-card--appointments",
+  pending: "stat-card--pending",
+  cancelled: "stat-card--cancelled sm:col-span-2 xl:col-span-1",
+} as const;
+
 const StatCard = ({ count = 0, label, icon, type }: StatCardProps) => {
   return (
-    <div
-      className={clsx("stat-card", {
-        "bg-appointments": type === "appointments",
-        "bg-pending": type === "pending",
-        "bg-cancelled": type === "cancelled",
-      })}
-    >
-      <div className='flex items-center gap-4'>
-        <Image
-          src={icon}
-          height={32}
-          width={32}
-          alt={label}
-          className='size-8 w-fit'
-        />
-
-        <h2 className='text-32-bold text-white'>{count}</h2>
+    <article className={clsx("stat-card glass-panel", toneClass[type])}>
+      <div className='stat-icon' aria-hidden='true'>
+        <Image src={icon} height={24} width={24} alt='' className='size-6' />
       </div>
 
-      <p className='text-14-regular'>{label}</p>
-    </div>
+      <div className='space-y-1'>
+        <p className='text-32-bold text-white tabular-nums'>{count}</p>
+        <h2 className='text-14-regular text-dark-700'>{label}</h2>
+      </div>
+    </article>
   );
 };
 

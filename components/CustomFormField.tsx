@@ -3,7 +3,6 @@
 import { Control } from "react-hook-form";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,11 +14,87 @@ import Image from "next/image";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 import DatePicker from "react-datepicker";
+import { useEffect, useRef, useState } from "react";
 
 import "react-datepicker/dist/react-datepicker.css";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 import { Textarea } from "./ui/textarea";
 import { Checkbox } from "./ui/checkbox";
+
+function useIsDesktop(breakpoint = 1024) {
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(`(min-width: ${breakpoint}px)`);
+    const update = () => setIsDesktop(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, [breakpoint]);
+
+  return isDesktop;
+}
+
+function AppointmentDatePicker({
+  field,
+  dateFormate,
+  showTimeSelect,
+}: {
+  field: any;
+  dateFormate?: string;
+  showTimeSelect?: boolean;
+}) {
+  const isDesktop = useIsDesktop();
+  const fieldRef = useRef<HTMLDivElement>(null);
+
+  const syncPopperWidth = () => {
+    const width = fieldRef.current?.getBoundingClientRect().width;
+    if (!width) return;
+
+    requestAnimationFrame(() => {
+      document
+        .querySelectorAll<HTMLElement>(".carepulse-datepicker-popper")
+        .forEach((popper) => {
+          popper.style.width = `${width}px`;
+          popper.style.minWidth = `${width}px`;
+        });
+    });
+  };
+
+  return (
+    <div ref={fieldRef} className='glass-field relative z-[100]'>
+      <Image
+        src='/assets/icons/calendar.svg'
+        width={20}
+        height={20}
+        alt=''
+        className='ml-3 size-5 shrink-0'
+      />
+      <FormControl>
+        <DatePicker
+          selected={field.value}
+          onChange={(date) => field.onChange(date)}
+          dateFormat={dateFormate ?? "MM/dd/yyyy"}
+          showTimeSelect={showTimeSelect ?? false}
+          timeIntervals={15}
+          timeCaption='Time'
+          withPortal={!isDesktop}
+          portalId={isDesktop ? undefined : "datepicker-portal"}
+          shouldCloseOnSelect={!showTimeSelect}
+          showPopperArrow={false}
+          popperPlacement='bottom-start'
+          popperProps={{
+            strategy: "fixed",
+          }}
+          onCalendarOpen={syncPopperWidth}
+          calendarClassName='carepulse-datepicker'
+          popperClassName='carepulse-datepicker-popper'
+          wrapperClassName='date-picker'
+        />
+      </FormControl>
+    </div>
+  );
+}
 
 interface CustomProps {
   control: Control<any>;
@@ -49,14 +124,14 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
   switch (fieldType) {
     case FormFieldType.INPUT:
       return (
-        <div className='flex rounded-md border border-dark-500'>
+        <div className='glass-field'>
           {iconSrc && (
             <Image
               src={iconSrc}
-              height={24}
-              width={24}
-              alt={iconAlt || "icon"}
-              className='ml-2'
+              height={20}
+              width={20}
+              alt={iconAlt || ""}
+              className='ml-3 size-5 shrink-0'
             />
           )}
 
@@ -90,31 +165,17 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
             withCountryCallingCode
             value={field.value as E164Number | undefined}
             onChange={field.onChange}
-            className='input-phone'
+            className='input-phone glass-field'
           />
         </FormControl>
       );
     case FormFieldType.DATE_PICKER:
       return (
-        <div className='flex rounded-md border border-dark-500 bg-dark-400'>
-          <Image
-            src='/assets/icons/calendar.svg'
-            width={24}
-            height={24}
-            alt='calender'
-            className='ml-2'
-          />
-          <FormControl>
-            <DatePicker
-              selected={field.value}
-              onChange={(date) => field.onChange(date)}
-              dateFormat={dateFormate ?? "MM/dd/yyyy"}
-              showTimeSelect={showTimeSelect ?? false}
-              timeInputLabel='Time:'
-              wrapperClassName='date-picker'
-            />
-          </FormControl>
-        </div>
+        <AppointmentDatePicker
+          field={field}
+          dateFormate={dateFormate}
+          showTimeSelect={showTimeSelect}
+        />
       );
     case FormFieldType.SKELETON:
       return renderSkeleton ? renderSkeleton(field) : null;
@@ -122,11 +183,9 @@ const RenderField = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <FormControl>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
-            <FormControl className='shad-select-trigger'>
-              <SelectTrigger>
-                <SelectValue placeholder={placeholder} />
-              </SelectTrigger>
-            </FormControl>
+            <SelectTrigger className='shad-select-trigger'>
+              <SelectValue placeholder={placeholder} />
+            </SelectTrigger>
             <SelectContent className='shad-select-content'>
               {props.children}
             </SelectContent>

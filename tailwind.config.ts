@@ -34,17 +34,30 @@ const config = {
           600: "#3E1716",
           700: "#F24E43",
         },
+        brand: {
+          mint: "#7EE0B8",
+          emerald: "#2FBF85",
+          deep: "#127A56",
+          hover: "#168A62",
+        },
         light: {
           200: "#E8E9E9",
         },
         dark: {
           200: "#0D0F10",
-          300: "#131619",
-          400: "#1A1D21",
-          500: "#363A3D",
-          600: "#76828D",
-          700: "#ABB8C4",
+          300: "#07090C",
+          400: "#12181C",
+          500: "#2A3138",
+          600: "#9AA7B2",
+          700: "#C5D0D8",
         },
+      },
+      boxShadow: {
+        glass:
+          "inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 50px rgba(0, 0, 0, 0.32)",
+      },
+      borderRadius: {
+        glass: "1.25rem",
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
