@@ -71,7 +71,7 @@ export default function PatientForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-5'>
-        <section className='onboard-intro mb-2 space-y-3'>
+        <section className='mb-2 space-y-3'>
           <p className='text-12-semibold uppercase tracking-[0.2em] text-brand-mint'>
             Patient intake
           </p>
@@ -81,7 +81,7 @@ export default function PatientForm() {
           </p>
         </section>
 
-        <div className='onboard-fields space-y-5'>
+        <div className='space-y-5'>
           <CustomFormField
             fieldType={FormFieldType.INPUT}
             control={form.control}
@@ -113,7 +113,7 @@ export default function PatientForm() {
 
         {error && <p className='shad-error text-14-regular'>{error}</p>}
 
-        <div className='onboard-cta pt-1'>
+        <div className='pt-1'>
           <SubmitButton isLoading={isLoading}>Get started</SubmitButton>
         </div>
       </form>
